@@ -2,10 +2,6 @@
 
 console.log("Running....");
 
-const PORT = 3000;
-const HOST = 'localhost';
-
-
 var express = require('express');
 
 var app = express();
@@ -102,20 +98,48 @@ io.sockets.on('connection', function (client) {
 	});
 });
 
-var spawn = require('child_process').spawn;
 
-var cp = spawn("node", ["azureHubSubscribe",
-	"-epIn",`${eventHubs.eventHubinFence.endpointHubName}`,
-	"-knIn", `${eventHubs.eventHubinFence.sharedAccessKeyName}`,
-	"-keyIn", `${eventHubs.eventHubinFence.shareAccessKey}`,
-	"-entpIn", `${eventHubs.eventHubinFence.entityPath}`,
-	"-epOut", `${eventHubs.eventHuboutFence.endpointHubName}`,
-	"-knOut", `${eventHubs.eventHuboutFence.sharedAccessKeyName}`,
-	"-keyOut", `${eventHubs.eventHuboutFence.shareAccessKey}`,
-	"-entpOut", `${eventHubs.eventHuboutFence.entityPath}`,
-	"-sname", `${eventHubs.eventHuboutFence.subscriptionName}`]);
+var subscribedNames = {
+	subs: []
+}
+
+function azureSubscription(subsName) {
+
+	var subExist = false;
+	subscribedNames['subs'].forEach(function (element) {
+		if (subsName === element) {
+			console.log(element);
+			subExist = true;
+		}
+	});
+
+	if (!subExist) {
+		var spawn = require('child_process').spawn;
+
+		var cp = spawn("node", ["azureHubSubscribe",
+			"-epIn", `${eventHubs.eventHubinFence.endpointHubName}`,
+			"-knIn", `${eventHubs.eventHubinFence.sharedAccessKeyName}`,
+			"-keyIn", `${eventHubs.eventHubinFence.shareAccessKey}`,
+			"-entpIn", `${eventHubs.eventHubinFence.entityPath}`,
+			"-epOut", `${eventHubs.eventHuboutFence.endpointHubName}`,
+			"-knOut", `${eventHubs.eventHuboutFence.sharedAccessKeyName}`,
+			"-keyOut", `${eventHubs.eventHuboutFence.shareAccessKey}`,
+			"-entpOut", `${eventHubs.eventHuboutFence.entityPath}`,
+			"-sname", `${subsName}`]);
+
+		////outputs spawn data to console
+		//cp.stdout.on("data", function (data) {
+		//	console.log(`STDOUT ${data.toString()}`);
+		//});
 
 
-cp.stdout.on("data", function (data) {
-	console.log(`STDOUT ${data.toString()}`);
-});
+		//add value to subscription name object to stop from duplicate subscription
+		subscribedNames['subs'].push(`${subsName}`);
+	}
+
+}
+
+azureSubscription(eventHubs.eventHuboutFence.subscriptionName);
+
+console.log(JSON.stringify(subscribedNames));
+
