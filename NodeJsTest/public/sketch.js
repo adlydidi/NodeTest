@@ -8,6 +8,8 @@ function setup() {
 	socket = io.connect('http://localhost:3000');
 
 	socket.on('hubData', mapUpdate);
+
+	socket.on('connect_error', serverError);
 }
 
 
@@ -16,6 +18,10 @@ function mapUpdate(mapData) {
 	console.log(mapData);
 }
 
+
+function serverError() {
+	//console.log('server error');
+}
 
 function draw() {
     ellipse(mouseX, mouseY, 10, 10);
