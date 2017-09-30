@@ -1,31 +1,19 @@
 'use strict';
 
 console.log("Running....");
-
 var express = require('express');
-
 var app = express();
-
-
-
 var server = app.listen(3000);
-
 app.use(express.static('public'));
-
 
 const redis = require('redis');
 const publisher = redis.createClient();
-
 
 var socket = require('socket.io');
 
 // WebSocket Portion
 // WebSockets work with the HTTP server
 var io = require('socket.io')(server);
-
-
-
-
 
 //this information has to be retreived from database
 var eventHubs = {

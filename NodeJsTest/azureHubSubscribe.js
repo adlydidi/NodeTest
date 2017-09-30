@@ -48,12 +48,10 @@ else {
 	//console.log(JSON.stringify(eventHubs));
 }
 
-
 var connectionStringNotInFence = 'Endpoint=' + eventHubs.eventHuboutFence.endpointHubName +
 	';SharedAccessKeyName=' + eventHubs.eventHuboutFence.sharedAccessKeyName +
 	';SharedAccessKey=' + eventHubs.eventHuboutFence.shareAccessKey +
 	';EntityPath=' + eventHubs.eventHuboutFence.entityPath;
-
 
 var connectionStringInFence = 'Endpoint=' + eventHubs.eventHubinFence.endpointHubName +
 	';SharedAccessKeyName=' + eventHubs.eventHubinFence.sharedAccessKeyName +
@@ -74,10 +72,6 @@ function callHub() {
 		publisher.publish(`${subscriptionName}:Outfence`, JSON.stringify(message.body));
 		//console.log('');
 	};
-
-
-
-
 
 	var printMessageInFence = function (message) {
 		//console.log('Message received: IF :');
@@ -104,7 +98,6 @@ function callHub() {
 			});
 		})
 		.catch(printError);
-
 
 	clientInFence.open()
 		.then(clientInFence.getPartitionIds.bind(clientInFence))
